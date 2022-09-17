@@ -24,3 +24,13 @@ Nice to haves:
  - Text extraction from image
  - Document location bookmarks
  - Mobile app
+
+
+
+
+
+Adding document:
+	- Create a folder if it doesn't exist
+	- Ask for document name
+	- Add new .txt document with provided name to the folder if it doesn't exist already, otherwise raise a warning
+	- Start taking input to add to the document
