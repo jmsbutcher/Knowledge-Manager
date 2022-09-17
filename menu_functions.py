@@ -1,4 +1,10 @@
 
+import os
+
+
+DOCUMENT_FOLDER_NAME = "km_Documents"
+
+
 def display_greeting():
     print("""
 _-^-__-^-__-^-__-^-__-^-__-^-__-^-__-^-__-^-__-^-_
@@ -41,4 +47,10 @@ def handle_choice(choice):
 
 
 def handle_create_new_document():
+    create_new_document_folder_if_doesnt_exist()
     print("New document created.")
+
+
+def create_new_document_folder_if_doesnt_exist():
+    if not os.path.exists(DOCUMENT_FOLDER_NAME):
+        os.mkdir(DOCUMENT_FOLDER_NAME)

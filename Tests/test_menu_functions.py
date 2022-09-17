@@ -12,6 +12,12 @@ from menu_functions import *
 
 
 def capture_output(func):
+    """ 
+    Redirects standard output so it can be converted to a string
+    
+    Input: a function that prints something to the console
+    Returns: a string consisting of the console output
+    """
     capturedOutput = io.StringIO()
     sys.stdout = capturedOutput
 
@@ -41,6 +47,14 @@ class TestMenu(unittest.TestCase):
         output = capture_output(handle_create_new_document)
         self.assertEqual(output, "New document created.\n")
 
+
+    def test_create_new_document_folder_if_doesnt_exist(self):
+        """ Test that create_new_document_fold... creates a new doc folder """
+
+        os.mkdir("test_new_doc_folder")
+        os.chdir("test_new_doc_folder")
+        self.assertFalse(os.path.exists(DOCUMENT_FOLDER_NAME))
+        
 
 #------------------------------------------------------------------------------
 
