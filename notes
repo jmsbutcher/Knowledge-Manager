@@ -1,0 +1,26 @@
+
+9/17/22
+James Butcher
+Knowledge Manager Notes
+
+
+Requirements:
+
+Must haves:
+ - Add new document
+ - Edit document
+ - View document
+ - Search for document
+ - Add, search, and filter by keyword
+
+Should haves:
+ - Multiplatform
+ - Cloud-based web app
+ - Support for text, web, word, pdf, images, epub
+
+Nice to haves:
+ - Auto keyword extraction
+ - Auto topic extraction
+ - Text extraction from image
+ - Document location bookmarks
+ - Mobile app
