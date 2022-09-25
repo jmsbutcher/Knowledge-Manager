@@ -2,6 +2,8 @@
 import os
 from pathlib import Path
 
+from document_creator import DocumentCreator, FilenameAlreadyExistsError
+
 HOME = Path(os.getcwd())
 DOCUMENT_FOLDER_NAME = "km_Documents"
 DOCUMENT_FOLDER_PATH = HOME / Path(DOCUMENT_FOLDER_NAME)
@@ -48,30 +50,21 @@ def handle_choice(choice):
     choice = choice.lower()
     if choice == "c":
         handle_create_new_document()
+    # Other choices ...
 
 
 def handle_create_new_document():
-    create_new_document_folder_if_doesnt_exist()
 
-    print
+    new_doc_name = get_input("Enter new document name: ")
+    
+    doc_creator = DocumentCreator()
+    doc_creator.create_new_document_folder_if_doesnt_exist()
 
-    print("New document created.")
-
-
-def create_new_document_folder_if_doesnt_exist():
-    if not os.path.exists(DOCUMENT_FOLDER_NAME):
-        os.mkdir(DOCUMENT_FOLDER_NAME)
-
-
-def check_if_filename_exists(file_path):
-    return os.path.exists(file_path)
-
-
-def create_new_text_file_if_doesnt_exist(file_path, filename):
-    if not check_if_filename_exists(file_path / filename):
-        new_file = filename + ".txt"
-        with open(file_path / new_file, "w") as f:
-            pass
-        print("New text file created: ",  new_file)
+    try:
+        doc_creator.create_new_text_file_if_doesnt_exist(new_doc_name)
+    except FilenameAlreadyExistsError:
+        print("\n|*|*| ERROR - File with name '{}' already exists.\n".format( \
+            new_doc_name))
     else:
-        print("Error - a file with that name already exists. Try again.")
+        print("New document created.")
+

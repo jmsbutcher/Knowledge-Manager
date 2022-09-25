@@ -1,115 +1,134 @@
 # 9/18/22
 
-import glob
 import os
-import shutil
 import sys
 import unittest
-from pathlib import Path
 
 ROOT = "C:/Users/James/Documents/Programming/KnowledgeManager"
 sys.path.append(ROOT)
 
-from globals import TEST_PATH
-from document_creator import DocumentCreator
-
-
-#------------------------------------------------------------------------------
-# Utility functions
-
-TEST_DIRECTORY_NAME = "test_dir"
-TEST_DIRECTORY_PATH = TEST_PATH / Path(TEST_DIRECTORY_NAME)
-
-def set_up_test_dir():
-    if os.path.exists(TEST_DIRECTORY_PATH):
-        shutil.rmtree(TEST_DIRECTORY_PATH)
-    os.mkdir(TEST_DIRECTORY_PATH)
-
-
-def tear_down_test_dir():
-    shutil.rmtree(TEST_DIRECTORY_PATH)
-
-#------------------------------------------------------------------------------
+from globals import ROOT, DOCUMENT_FOLDER_NAME
+from common_test_functions import \
+    TEST_DIRECTORY_PATH, \
+    set_up_test_dir, \
+    tear_down_test_dir, \
+    capture_output
+from document_creator import DocumentCreator, FilenameAlreadyExistsError
 
 
 class TestDocumentCreator(unittest.TestCase):
 
+    #------------------------------------------------------------------------------------
+    
+    def setUp(self):
+        # Set up a test directory "test_dir/" inside the "Tests/" directory
+        set_up_test_dir()
+        os.chdir(TEST_DIRECTORY_PATH)
+
+        # Create a document creator to test on
+        self.doc_creator = DocumentCreator()
+
+
+    def tearDown(self):
+        # Move back into the root directory and remove the test directory
+        os.chdir(ROOT)
+        tear_down_test_dir()
+
+    #------------------------------------------------------------------------------------
+
+
     def test_create_document_creator(self):
-        doc_creator = DocumentCreator
+        self.doc_creator = DocumentCreator()
         self.assertTrue(True)
 
 
     def test_create_new_document_folder_if_doesnt_exist(self):
         """ Test that create_new_document_fold... creates a new doc folder """
-        pass
+        
+        # Test that the folder doesn't exist first ( ../Tests/test_dir/km_documents )
+        self.assertFalse(os.path.exists(DOCUMENT_FOLDER_NAME))
 
-        # set_up_test_dir()
-        # os.chdir(TEST_DIRECTORY_PATH)
+        # Now call the function to create the folder
+        self.doc_creator.create_new_document_folder_if_doesnt_exist()
 
-        # # Test that the folder doesn't exist first ( ../Tests/test_dir/km_documents )
-        # self.assertFalse(os.path.exists(DOCUMENT_FOLDER_NAME))
+        # Test that the document folder has been created
+        self.assertTrue(os.path.exists(DOCUMENT_FOLDER_NAME))
 
-        # # Now call the function to create the folder
-        # create_new_document_folder_if_doesnt_exist()
-
-        # # Test that the document folder has been created
-        # self.assertTrue(os.path.exists(DOCUMENT_FOLDER_NAME))
-
-        # # Make sure a system error doesn't happen here as a result of
-        # # trying to create a folder that already exists
-        # output = capture_output(create_new_document_folder_if_doesnt_exist)
-        # self.assertEqual(output, "")
-
-        # os.chdir(HOME)
-        # tear_down_test_dir()
+        # Make sure a system error doesn't happen here as a result of
+        # trying to create a folder that already exists
+        output = capture_output(self.doc_creator.create_new_document_folder_if_doesnt_exist)
+        self.assertEqual(output, "")
 
 
     def test_check_if_filename_exists_returns_false_when_doesnt_exist(self):
         """ 
-        Test check_if_filename_exists function returns true if a filename
-        exists in the target directory and false otherwise.
+        Test check_if_filename_exists function returns false if a filename
+        doesn't exist in the target directory.
         """
-        pass
-        # set_up_test_dir()
-
-        # non_existent_filename = "nothing"
-        # self.assertFalse(check_if_filename_exists(TEST_DIRECTORY_PATH / non_existent_filename))
-
-        # tear_down_test_dir()
+        self.doc_creator.create_new_document_folder_if_doesnt_exist()
+        non_existent_filename = "nothing"
+        exists = self.doc_creator._check_if_filename_exists(non_existent_filename)
+        self.assertFalse(exists)
+        
 
 
     def test_check_if_filename_exists_returns_true_when_does_exist(self):
         """ 
         Test check_if_filename_exists function returns true if a filename
-        exists in the target directory and false otherwise.
+        exists in the target directory.
         """
-        pass
-        # set_up_test_dir()
+        self.doc_creator.create_new_document_folder_if_doesnt_exist()
+        filename = "file.txt"
+        with open(TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME / filename, "w") as f:
+            exists = self.doc_creator._check_if_filename_exists(filename)
+            self.assertTrue(exists)
 
-        # filename = "file.txt"
-        # with open(TEST_DIRECTORY_PATH / filename, "w") as f:
-        #     self.assertTrue(check_if_filename_exists(TEST_DIRECTORY_PATH / filename))
-
-        # tear_down_test_dir()
 
 
     def test_create_new_text_file_if_doesnt_exist_with_provided_name(self):
         """ Test that a new text document gets created with the correct name"""
-        pass
-        # set_up_test_dir()
-        # os.chdir(TEST_DIRECTORY_PATH) # HOME / Tests / test_dir
+    
+        self.doc_creator.create_new_document_folder_if_doesnt_exist()
 
-        # # Create a mock documents folder first, as used in handle_create_new_document
-        # create_new_document_folder_if_doesnt_exist() # HOME / Tests / test_dir / km_documents
+        # Create the file
+        TEST_FILE_NAME = "test_document.txt"
+        self.doc_creator.create_new_text_file_if_doesnt_exist(TEST_FILE_NAME)
 
-        # # Create the file and test that it exists
-        # TEST_FILE_NAME = "test_document"
-        # TEST_FILE_PATH = TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME
-        # create_new_text_file_if_doesnt_exist(TEST_FILE_PATH, TEST_FILE_NAME) # HOME / Tests / test_dir / km_documents / test_document
-        # self.assertTrue(os.path.exists(TEST_FILE_PATH, TEST_FILE_NAME))
+        # Check if the file now exists in the correct location
+        TEST_FILE_PATH = TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME / TEST_FILE_NAME
+        self.assertTrue(os.path.exists(TEST_FILE_PATH))
 
-        # os.chdir(HOME)
-        # tear_down_test_dir()
+
+    def test_create_new_text_file_always_ends_with_dot_txt(self):
+        """ 
+        Test that create_new_text_file... function always puts ".txt" at 
+        the end, even if it's not provided.
+        """
+        self.doc_creator.create_new_document_folder_if_doesnt_exist()
+
+        # With ".txt" provided explicitly
+        TEST_FILE_NAME_1 = "test_document1.txt"
+        self.doc_creator.create_new_text_file_if_doesnt_exist(TEST_FILE_NAME_1)
+        EXPECTED_FILE_NAME_1 = "test_document1.txt"
+        EXPECTED_FILE_PATH_1 = \
+            TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME / EXPECTED_FILE_NAME_1
+        self.assertTrue(os.path.exists(EXPECTED_FILE_PATH_1))
+
+        # Without ".txt"
+        TEST_FILE_NAME_2 = "test_document2"
+        self.doc_creator.create_new_text_file_if_doesnt_exist(TEST_FILE_NAME_2)
+        EXPECTED_FILE_NAME_2 = "test_document2.txt"
+        EXPECTED_FILE_PATH_2 = \
+            TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME / EXPECTED_FILE_NAME_2
+        self.assertTrue(os.path.exists(EXPECTED_FILE_PATH_2))
+
+        # Make sure file without ".txt" extension DOESN'T exist
+        TEST_FILE_NAME_3 = "test_document3"
+        self.doc_creator.create_new_text_file_if_doesnt_exist(TEST_FILE_NAME_3)
+        EXPECTED_FILE_NAME_3 = "test_document3"
+        EXPECTED_FILE_PATH_3 = \
+            TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME / EXPECTED_FILE_NAME_3
+        self.assertFalse(os.path.exists(EXPECTED_FILE_PATH_3))
 
 
     def test_create_new_text_file_if_doesnt_exist_gives_error_message_if_exists(self):
@@ -118,26 +137,19 @@ class TestDocumentCreator(unittest.TestCase):
         existing file results in an error message and no new file being
         created.
         """
-        pass
-        # set_up_test_dir()
-        # os.chdir(TEST_DIRECTORY_PATH)
 
-        # # Create a mock documents folder first, as used in handle_create_new_document
-        # create_new_document_folder_if_doesnt_exist()
+        self.doc_creator.create_new_document_folder_if_doesnt_exist()
 
-        # # Create the file and test that it exists
-        # TEST_FILE_NAME = "test_document"
-        # TEST_FILE_PATH = TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME
-        # create_new_text_file_if_doesnt_exist(TEST_FILE_PATH, TEST_FILE_NAME)
-        # self.assertTrue(os.path.exists(TEST_FILE_PATH / TEST_FILE_NAME))
+        # Create the file and test that it exists
+        TEST_FILE_NAME = "test_document.txt"
+        TEST_FILE_PATH = TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME / TEST_FILE_NAME
+        self.doc_creator.create_new_text_file_if_doesnt_exist(TEST_FILE_NAME)
+        self.assertTrue(os.path.exists(TEST_FILE_PATH))
 
-        # # Try creating a file with the same name, and make sure an error message
-        # # gets displayed.
-        # output = capture_output(create_new_text_file_if_doesnt_exist(TEST_FILE_PATH, TEST_FILE_NAME))
-        # self.assertIn(output.lower(), "error")
-
-        # os.chdir(HOME)
-        # tear_down_test_dir()
+        # Try creating a file with the same name, and make sure 
+        # an error message gets displayed.
+        create_file_again_func = self.doc_creator.create_new_text_file_if_doesnt_exist
+        self.assertRaises(FilenameAlreadyExistsError, create_file_again_func, TEST_FILE_NAME)
 
 
 #------------------------------------------------------------------------------

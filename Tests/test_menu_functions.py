@@ -1,40 +1,50 @@
 # 9/17/22 
 
-import io
+import os
 import sys
 import unittest
 from unittest.mock import patch
 
+from common_test_functions import \
+    TEST_DIRECTORY_PATH, \
+    set_up_test_dir, \
+    tear_down_test_dir, \
+    capture_output
+
+from menu_functions import \
+    display_greeting, \
+    display_menu, \
+    handle_create_new_document
+
+
 ROOT = "C:/Users/James/Documents/Programming/KnowledgeManager"
 sys.path.append(ROOT)
 
-from menu_functions import *
-from globals import TEST_PATH
-
-
-#------------------------------------------------------------------------------
-
-
-def capture_output(func):
-    """ 
-    Redirects standard output so it can be converted to a string
-    
-    Input: a function that prints something to the console
-    Returns: a string consisting of the console output
-    """
-    capturedOutput = io.StringIO()
-    sys.stdout = capturedOutput
-
-    func()
-
-    sys.stdout = sys.__stdout__
-    return capturedOutput.getvalue()
-
-
-#------------------------------------------------------------------------------
+from globals import ROOT
 
 
 class TestMenu(unittest.TestCase):
+
+    #------------------------------------------------------------------------------------
+    
+    def setUp(self):
+        # Set up a test directory "test_dir/" inside the "Tests/" directory
+        set_up_test_dir()
+        os.chdir(TEST_DIRECTORY_PATH)
+
+
+    def tearDown(self):
+        # Move back into the root directory and remove the test directory
+        os.chdir(ROOT)
+        tear_down_test_dir()
+
+
+    def assertErrorOutput(self, output):
+        # Assert that the keyword "error" appears somewhere in the string "output"
+        self.assertIn("error", output.lower())
+
+    #------------------------------------------------------------------------------------
+
 
     def test_display_greeting(self):
         """ Test that a greeting (non-empty) is displayed to the console """
@@ -48,10 +58,25 @@ class TestMenu(unittest.TestCase):
         self.assertNotEqual(output, "")
 
 
-    def test_handle_create_new_document_confirm_msg(self):
+    @patch('menu_functions.get_input', return_value="doc") # Supplies console input
+    def test_handle_create_new_document_confirm_msg(self, input):
         """ Test that confirmation message is displayed to the console """
         output = capture_output(handle_create_new_document)
         self.assertEqual(output, "New document created.\n")
+
+
+    @patch('menu_functions.get_input', return_value="doc") # Supplies console input
+    def test_get_error_msg_when_new_doc_name_already_exists(self, input):
+        """ 
+        Test that an error message is displayed when trying to
+        create a document with a name that already exists.
+        """
+        output1 = capture_output(handle_create_new_document)
+        self.assertEqual(output1, "New document created.\n")
+
+        output2 = capture_output(handle_create_new_document)
+        #self.assertIn("error", output2.lower())
+        self.assertErrorOutput(output2)
 
         
 
