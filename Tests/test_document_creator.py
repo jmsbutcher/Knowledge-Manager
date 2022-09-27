@@ -13,7 +13,7 @@ from common_test_functions import \
     set_up_test_dir, \
     tear_down_test_dir, \
     capture_output
-from document_creator import DocumentCreator, FilenameAlreadyExistsError
+from DocumentManagers.document_creator import DocumentCreator, FilenameAlreadyExistsError
 
 
 class TestDocumentCreator(unittest.TestCase):
@@ -67,7 +67,7 @@ class TestDocumentCreator(unittest.TestCase):
         """
         self.doc_creator.create_new_document_folder_if_doesnt_exist()
         non_existent_filename = "nothing"
-        exists = self.doc_creator._check_if_filename_exists(non_existent_filename)
+        exists = self.doc_creator._filename_exists(non_existent_filename)
         self.assertFalse(exists)
         
 
@@ -80,7 +80,7 @@ class TestDocumentCreator(unittest.TestCase):
         self.doc_creator.create_new_document_folder_if_doesnt_exist()
         filename = "file.txt"
         with open(TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME / filename, "w") as f:
-            exists = self.doc_creator._check_if_filename_exists(filename)
+            exists = self.doc_creator._filename_exists(filename)
             self.assertTrue(exists)
 
 

@@ -2,7 +2,7 @@
 import os
 from pathlib import Path
 
-from document_creator import DocumentCreator, FilenameAlreadyExistsError
+from DocumentManagers.document_creator import DocumentCreator, FilenameAlreadyExistsError
 
 HOME = Path(os.getcwd())
 DOCUMENT_FOLDER_NAME = "km_Documents"
