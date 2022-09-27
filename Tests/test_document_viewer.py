@@ -1,30 +1,14 @@
 # 9/25/22
 
-import os
-import sys
-import unittest
-from pathlib import Path
-
-ROOT = "C:/Users/James/Documents/Programming/KnowledgeManager"
-sys.path.append(ROOT)
-
-from globals import ROOT, DOCUMENT_FOLDER_NAME
-from common_test_functions import \
-    TEST_DIRECTORY_PATH, \
-    set_up_test_dir, \
-    tear_down_test_dir
 from DocumentManagers.document_creator import DocumentCreator
 from DocumentManagers.document_viewer import DocumentViewer, FilenameNotFoundError
+from test_base import TestBase
 
 
-class TestDocumentViewer(unittest.TestCase):
+class TestDocumentViewer(TestBase):
 
-    #------------------------------------------------------------------------------------
-    
     def setUp(self):
-        # Set up a test directory "test_dir/" inside the "Tests/" directory
-        set_up_test_dir()
-        os.chdir(TEST_DIRECTORY_PATH)
+        TestBase.setUp(self)
 
         # Create and initialize a document creator to help with tests
         self.doc_creator = DocumentCreator()
@@ -32,12 +16,6 @@ class TestDocumentViewer(unittest.TestCase):
 
         # Create a document viwer to test on
         self.doc_viewer = DocumentViewer()
-
-
-    def tearDown(self):
-        # Move back into the root directory and remove the test directory
-        os.chdir(ROOT)
-        tear_down_test_dir()
 
     #------------------------------------------------------------------------------------
 
@@ -65,7 +43,7 @@ class TestDocumentViewer(unittest.TestCase):
 
         # Add some contents to the file
         sample_text = "This is a sample document."
-        with open(Path(DOCUMENT_FOLDER_NAME) / (sample_filename + ".txt"), "w") as f:
+        with open(self.doc_creator._folder_path / (sample_filename + ".txt"), "w") as f:
             f.write(sample_text)
 
         # Now get the string from the viewer's view method
@@ -73,9 +51,3 @@ class TestDocumentViewer(unittest.TestCase):
 
         self.assertEqual(text_returned, sample_text)
 
-
-
-#------------------------------------------------------------------------------
-
-if __name__ == "__main__":
-    unittest.main()

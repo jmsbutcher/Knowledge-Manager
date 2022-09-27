@@ -6,27 +6,27 @@ import sys
 from pathlib import Path
 
 
-ROOT = "C:/Users/James/Documents/Programming/KnowledgeManager"
-sys.path.append(ROOT)
+# ROOT = "C:/Users/James/Documents/Programming/KnowledgeManager"
+# sys.path.append(ROOT)
 
-from globals import ROOT, TEST_PATH
+# from globals import ROOT, TEST_PATH
 
 
-#------------------------------------------------------------------------------
-# Test directory
+# #------------------------------------------------------------------------------
+# # Test directory
 
-# A temporary, disposable directory for performing folder and file creation tests
-TEST_DIRECTORY_NAME = "test_dir"
-TEST_DIRECTORY_PATH = TEST_PATH / Path(TEST_DIRECTORY_NAME)
+# # A temporary, disposable directory for performing folder and file creation tests
+# TEST_DIRECTORY_NAME = "test_dir"
+# TEST_DIRECTORY_PATH = TEST_PATH / Path(TEST_DIRECTORY_NAME)
 
-# Put these two functions into the setUp() and tearDown() unittest methods
-def set_up_test_dir():
-    if os.path.exists(TEST_DIRECTORY_PATH):
-        shutil.rmtree(TEST_DIRECTORY_PATH)
-    os.mkdir(TEST_DIRECTORY_PATH)
+# # Put these two functions into the setUp() and tearDown() unittest methods
+# def set_up_test_dir():
+#     if os.path.exists(TEST_DIRECTORY_PATH):
+#         shutil.rmtree(TEST_DIRECTORY_PATH)
+#     os.mkdir(TEST_DIRECTORY_PATH)
 
-def tear_down_test_dir():
-    shutil.rmtree(TEST_DIRECTORY_PATH)
+# def tear_down_test_dir():
+#     shutil.rmtree(TEST_DIRECTORY_PATH)
 
 
 #------------------------------------------------------------------------------

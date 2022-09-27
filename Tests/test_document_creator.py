@@ -1,38 +1,22 @@
 # 9/18/22
 
 import os
-import sys
 import unittest
 
-ROOT = "C:/Users/James/Documents/Programming/KnowledgeManager"
-sys.path.append(ROOT)
-
-from globals import ROOT, DOCUMENT_FOLDER_NAME
-from common_test_functions import \
-    TEST_DIRECTORY_PATH, \
-    set_up_test_dir, \
-    tear_down_test_dir, \
-    capture_output
+from common_test_functions import capture_output
 from DocumentManagers.document_creator import DocumentCreator, FilenameAlreadyExistsError
+from test_base import TestBase, TEST_DIRECTORY_PATH
 
 
-class TestDocumentCreator(unittest.TestCase):
-
-    #------------------------------------------------------------------------------------
+class TestDocumentCreator(TestBase):
     
     def setUp(self):
-        # Set up a test directory "test_dir/" inside the "Tests/" directory
-        set_up_test_dir()
-        os.chdir(TEST_DIRECTORY_PATH)
-
-        # Create a document creator to test on
+        TestBase.setUp(self)
         self.doc_creator = DocumentCreator()
-
-
-    def tearDown(self):
-        # Move back into the root directory and remove the test directory
-        os.chdir(ROOT)
-        tear_down_test_dir()
+        self._test_docs_path = TEST_DIRECTORY_PATH / self.doc_creator._folder_name
+    
+    def _doc_folder_exists(self):
+        return os.path.exists(self.doc_creator._folder_name)
 
     #------------------------------------------------------------------------------------
 
@@ -46,13 +30,13 @@ class TestDocumentCreator(unittest.TestCase):
         """ Test that create_new_document_fold... creates a new doc folder """
         
         # Test that the folder doesn't exist first ( ../Tests/test_dir/km_documents )
-        self.assertFalse(os.path.exists(DOCUMENT_FOLDER_NAME))
+        self.assertFalse(self._doc_folder_exists())
 
         # Now call the function to create the folder
         self.doc_creator.create_new_document_folder_if_doesnt_exist()
 
         # Test that the document folder has been created
-        self.assertTrue(os.path.exists(DOCUMENT_FOLDER_NAME))
+        self.assertTrue(self._doc_folder_exists())
 
         # Make sure a system error doesn't happen here as a result of
         # trying to create a folder that already exists
@@ -79,7 +63,7 @@ class TestDocumentCreator(unittest.TestCase):
         """
         self.doc_creator.create_new_document_folder_if_doesnt_exist()
         filename = "file.txt"
-        with open(TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME / filename, "w") as f:
+        with open(self._test_docs_path / filename, "w"):
             exists = self.doc_creator._filename_exists(filename)
             self.assertTrue(exists)
 
@@ -95,7 +79,7 @@ class TestDocumentCreator(unittest.TestCase):
         self.doc_creator.create_new_text_file_if_doesnt_exist(TEST_FILE_NAME)
 
         # Check if the file now exists in the correct location
-        TEST_FILE_PATH = TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME / TEST_FILE_NAME
+        TEST_FILE_PATH = self._test_docs_path / TEST_FILE_NAME
         self.assertTrue(os.path.exists(TEST_FILE_PATH))
 
 
@@ -110,24 +94,21 @@ class TestDocumentCreator(unittest.TestCase):
         TEST_FILE_NAME_1 = "test_document1.txt"
         self.doc_creator.create_new_text_file_if_doesnt_exist(TEST_FILE_NAME_1)
         EXPECTED_FILE_NAME_1 = "test_document1.txt"
-        EXPECTED_FILE_PATH_1 = \
-            TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME / EXPECTED_FILE_NAME_1
+        EXPECTED_FILE_PATH_1 = self._test_docs_path / EXPECTED_FILE_NAME_1
         self.assertTrue(os.path.exists(EXPECTED_FILE_PATH_1))
 
         # Without ".txt"
         TEST_FILE_NAME_2 = "test_document2"
         self.doc_creator.create_new_text_file_if_doesnt_exist(TEST_FILE_NAME_2)
         EXPECTED_FILE_NAME_2 = "test_document2.txt"
-        EXPECTED_FILE_PATH_2 = \
-            TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME / EXPECTED_FILE_NAME_2
+        EXPECTED_FILE_PATH_2 = self._test_docs_path / EXPECTED_FILE_NAME_2
         self.assertTrue(os.path.exists(EXPECTED_FILE_PATH_2))
 
         # Make sure file without ".txt" extension DOESN'T exist
         TEST_FILE_NAME_3 = "test_document3"
         self.doc_creator.create_new_text_file_if_doesnt_exist(TEST_FILE_NAME_3)
         EXPECTED_FILE_NAME_3 = "test_document3"
-        EXPECTED_FILE_PATH_3 = \
-            TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME / EXPECTED_FILE_NAME_3
+        EXPECTED_FILE_PATH_3 = self._test_docs_path / EXPECTED_FILE_NAME_3
         self.assertFalse(os.path.exists(EXPECTED_FILE_PATH_3))
 
 
@@ -142,7 +123,7 @@ class TestDocumentCreator(unittest.TestCase):
 
         # Create the file and test that it exists
         TEST_FILE_NAME = "test_document.txt"
-        TEST_FILE_PATH = TEST_DIRECTORY_PATH / DOCUMENT_FOLDER_NAME / TEST_FILE_NAME
+        TEST_FILE_PATH = self._test_docs_path / TEST_FILE_NAME
         self.doc_creator.create_new_text_file_if_doesnt_exist(TEST_FILE_NAME)
         self.assertTrue(os.path.exists(TEST_FILE_PATH))
 
@@ -150,9 +131,3 @@ class TestDocumentCreator(unittest.TestCase):
         # an error message gets displayed.
         create_file_again_func = self.doc_creator.create_new_text_file_if_doesnt_exist
         self.assertRaises(FilenameAlreadyExistsError, create_file_again_func, TEST_FILE_NAME)
-
-
-#------------------------------------------------------------------------------
-
-if __name__ == "__main__":
-    unittest.main()
