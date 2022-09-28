@@ -1,7 +1,6 @@
 # 9/18/22
 
 import os
-import unittest
 
 from common_test_functions import capture_output
 from DocumentManagers.document_creator import DocumentCreator, FilenameAlreadyExistsError

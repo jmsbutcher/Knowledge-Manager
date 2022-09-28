@@ -1,4 +1,13 @@
 # 9/26/22
+#
+# Base class for all test modules
+#
+# - Also takes care of adding the root directory to the system path, 
+#   so all test modules can use the global variables shared by the main program.
+#
+# - Defines standard set up and tear down functions, which can be extended.
+#   The functions set up a temporary directory for performing all tests,
+#   including folder and file creation/modification operations.
 
 import os
 import shutil
@@ -6,6 +15,7 @@ import sys
 import unittest
 from pathlib import Path
 
+# Make the global variables accessible to all test modules
 ROOT = "C:/Users/James/Documents/Programming/KnowledgeManager"
 sys.path.append(ROOT)
 
