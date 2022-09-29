@@ -1,11 +1,15 @@
 # 9/17/22 
 
-import unittest
 from unittest.mock import patch
 
 from common_test_functions import capture_output
-from menu_functions import display_greeting, display_menu, handle_create_new_document
+from menu_functions import \
+    display_greeting, \
+    display_menu, \
+    handle_create_new_document, \
+    handle_view_document
 from test_base import TestBase
+from DocumentManagers.document_creator import DocumentCreator
 
 
 class TestMenu(TestBase):
@@ -46,6 +50,18 @@ class TestMenu(TestBase):
         self.assertEqual(output1, "New document created.\n")
 
         output2 = capture_output(handle_create_new_document)
-        #self.assertIn("error", output2.lower())
         self._assertErrorOutput(output2)
 
+
+    @patch('menu_functions.get_input', return_value="doc")
+    def test_handle_view_document_error_when_document_doesnt_exist(self, input):
+        output = capture_output(handle_view_document)
+        self._assertErrorOutput(output)
+
+
+    def test_handle_view_document_prints_doc_to_console(self):
+        doc_creator = DocumentCreator()
+        doc_creator.create_new_document_folder_if_doesnt_exist()
+        doc_creator.create_new_text_file_if_doesnt_exist("")
+        doc_creator
+    

@@ -2,7 +2,11 @@
 import os
 from pathlib import Path
 
+from common_functions import print_banner_line
+
 from DocumentManagers.document_creator import DocumentCreator, FilenameAlreadyExistsError
+from DocumentManagers.document_exceptions import FilenameNotFoundError
+from DocumentManagers.document_viewer import DocumentViewer
 
 HOME = Path(os.getcwd())
 DOCUMENT_FOLDER_NAME = "km_Documents"
@@ -29,6 +33,7 @@ def display_menu():
 -----------------------------------------------------
 Select a choice:
 C   -   Create new document
+V   -   View document
 Q   -   Quit
 : """, end="")
 
@@ -50,7 +55,9 @@ def handle_choice(choice):
     choice = choice.lower()
     if choice == "c":
         handle_create_new_document()
-    # Other choices ...
+    elif choice == "v":
+        handle_view_document()
+    # Other choices...
 
 
 def handle_create_new_document():
@@ -67,4 +74,18 @@ def handle_create_new_document():
             new_doc_name))
     else:
         print("New document created.")
+
+
+def handle_view_document():
+    document_name = get_input("Enter document name:")
+    doc_viewer = DocumentViewer()
+    try:
+        doc_contents = doc_viewer.view_document_by_name(document_name)
+        print()
+        print_banner_line(document_name, 50)
+        print(doc_contents)
+        print_banner_line(" END ", 50)
+    except FilenameNotFoundError:
+        print("\n|*|*| ERROR - Document '{}' not found.\n".format(document_name))
+
 
