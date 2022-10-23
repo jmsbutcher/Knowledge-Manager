@@ -6,6 +6,9 @@ from .document_exceptions import FilenameAlreadyExistsError
 
 class DocumentCreator(DocumentHandlerBase):
 
+    def __init__(self, document_repo_path):
+        super().__init__(document_repo_path)
+
     def create_new_text_file_if_doesnt_exist(self, filename):
         # Validate filename
         filename = self._ensure_dot_txt_suffix(filename)

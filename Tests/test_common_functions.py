@@ -1,6 +1,6 @@
 # 9/28/22
 
-from KnowledgeManager.common_functions import print_banner_line
+from KnowledgeManager.Utils.common_functions import print_banner_line
 from common_test_functions import capture_output
 from test_base import TestBase
 

@@ -1,7 +1,7 @@
 # 9/28/22
 
 
-def print_banner_line(message, length):
+def print_banner_line(message, length=50):
     if (len(message) > length):
         print(message)
         return
@@ -15,4 +15,5 @@ def print_banner_line(message, length):
             j += 1
         else:
             result += '-'
+    result += ""
     print(result)

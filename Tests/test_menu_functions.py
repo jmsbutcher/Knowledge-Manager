@@ -1,11 +1,12 @@
 # 9/17/22 
 
 import sys
-sys.path.append("../KnowledgeManager")
+sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager")
 
 from unittest.mock import patch
 
 from KnowledgeManager.menu_functions import \
+    get_input, \
     display_greeting, \
     display_menu, \
     handle_create_new_document, \
@@ -37,34 +38,17 @@ class TestMenu(TestBase):
         self.assertNotEqual(output, "")
 
 
-    @patch('menu_functions.get_input', return_value="doc") # Supplies console input
-    def test_handle_create_new_document_confirm_msg(self, input):
-        """ Test that confirmation message is displayed to the console """
-        output = capture_output(handle_create_new_document)
-        self.assertEqual(output, "New document created.\n")
-
-
-    @patch('menu_functions.get_input', return_value="doc") # Supplies console input
-    def test_get_error_msg_when_new_doc_name_already_exists(self, input):
-        """ 
-        Test that an error message is displayed when trying to
-        create a document with a name that already exists.
-        """
-        output1 = capture_output(handle_create_new_document)
-        self.assertEqual(output1, "New document created.\n")
-
-        output2 = capture_output(handle_create_new_document)
-        self._assertErrorOutput(output2)
-
-
-    @patch('menu_functions.get_input', return_value="doc")
-    def test_handle_view_document_error_when_document_doesnt_exist(self, input):
-        output = capture_output(handle_view_document)
-        self._assertErrorOutput(output)
+    def test_handle_view_document_error_when_document_doesnt_exist(self):
+        with patch('builtins.input', return_value='doc4'):
+            output = capture_output(handle_view_document)
+            self._assertErrorOutput(output)
 
 
     def test_handle_view_document_prints_doc_to_console(self):
         doc_creator = DocumentCreator(TEST_DOCUMENT_REPO_PATH)
-        doc_creator.create_new_text_file_if_doesnt_exist("")
-        doc_creator
+        doc_creator.create_new_text_file_if_doesnt_exist("doc5")
+        with open("doc5.txt", "w") as d:
+            d.write("This is a doc.")
+
+        self.assertTrue(True)
     
