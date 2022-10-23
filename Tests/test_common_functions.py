@@ -1,10 +1,10 @@
 # 9/28/22
 
-from common_functions import print_banner_line
+from KnowledgeManager.common_functions import print_banner_line
 from common_test_functions import capture_output
 from test_base import TestBase
 
-class TestMenu(TestBase):
+class TestCommonFunctions(TestBase):
 
     def test_print_header_line_returns_string_of_correct_length(self):
 

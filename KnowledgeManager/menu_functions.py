@@ -2,7 +2,7 @@
 import os
 from pathlib import Path
 
-from common_functions import print_banner_line
+#from Utils.common_functions import print_banner_line
 
 from DocumentManagers.document_creator import DocumentCreator, FilenameAlreadyExistsError
 from DocumentManagers.document_exceptions import FilenameNotFoundError
@@ -65,7 +65,7 @@ def handle_create_new_document():
     new_doc_name = get_input("Enter new document name: ")
     
     doc_creator = DocumentCreator()
-    doc_creator.create_new_document_folder_if_doesnt_exist()
+    doc_creator.create_new_document_repo_if_doesnt_exist()
 
     try:
         doc_creator.create_new_text_file_if_doesnt_exist(new_doc_name)
@@ -82,9 +82,9 @@ def handle_view_document():
     try:
         doc_contents = doc_viewer.view_document_by_name(document_name)
         print()
-        print_banner_line(document_name, 50)
+        #print_banner_line(document_name, 50)
         print(doc_contents)
-        print_banner_line(" END ", 50)
+        #print_banner_line(" END ", 50)
     except FilenameNotFoundError:
         print("\n|*|*| ERROR - Document '{}' not found.\n".format(document_name))
 

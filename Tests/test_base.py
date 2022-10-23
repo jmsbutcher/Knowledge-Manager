@@ -11,20 +11,17 @@
 
 import os
 import shutil
-import sys
 import unittest
 from pathlib import Path
 
-# Make the global variables accessible to all test modules
-ROOT = "C:/Users/James/Documents/Programming/KnowledgeManager"
-sys.path.append(ROOT)
-
-from globals import ROOT, TEST_PATH
-
-
 # Temporary disposable directory for performing folder and file creation tests
 TEST_DIRECTORY_NAME = "test_dir"
-TEST_DIRECTORY_PATH = TEST_PATH / Path(TEST_DIRECTORY_NAME)
+TEST_DIRECTORY_PATH = Path.cwd() / Path(TEST_DIRECTORY_NAME)
+
+# Temporary document repo directory within the temporary test directory
+TEST_DOCUMENT_REPO_NAME = "test_doc_repo"
+TEST_DOCUMENT_REPO_PATH = TEST_DIRECTORY_PATH / TEST_DOCUMENT_REPO_NAME
+
 
 
 def set_up_test_dir():
@@ -47,7 +44,7 @@ class TestBase(unittest.TestCase):
 
 
     def tearDown(self):
-        # Move back into the root directory and remove the test directory
-        os.chdir(ROOT)
+        # Move back into the Test root directory and remove the test directory
+        os.chdir("..")
         tear_down_test_dir()
 
