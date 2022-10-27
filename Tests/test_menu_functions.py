@@ -1,5 +1,6 @@
 # 9/17/22 
 
+import io
 import sys
 sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager")
 
@@ -37,18 +38,33 @@ class TestMenu(TestBase):
         output = capture_output(display_menu)
         self.assertNotEqual(output, "")
 
+    @patch('builtins.input', side_effect=['doc', '1', "q"])
+    def test_handle_view_document_error_when_document_doesnt_exist(self, mock_inputs):
 
-    def test_handle_view_document_error_when_document_doesnt_exist(self):
-        with patch('builtins.input', return_value='doc4'):
-            output = capture_output(handle_view_document)
-            self._assertErrorOutput(output)
-
-
-    def test_handle_view_document_prints_doc_to_console(self):
         doc_creator = DocumentCreator(TEST_DOCUMENT_REPO_PATH)
-        doc_creator.create_new_text_file_if_doesnt_exist("doc5")
-        with open("doc5.txt", "w") as d:
-            d.write("This is a doc.")
+        doc_creator.create_new_text_file_if_doesnt_exist("doc1")
+        doc_creator.create_new_text_file_if_doesnt_exist("doc2")
+        with open(TEST_DOCUMENT_REPO_PATH / "doc1.txt", "w") as d:
+            d.write("sample contents")
 
-        self.assertTrue(True)
+        #with patch('builtins.input', return_value='doc'):
+        #with patch('builtins.input', side_effect=["doc", "1"]):
+
+        output = capture_output(handle_view_document)
+
+        #self.assertEqual("1 - doc1", output)
+
+        self.assertTrue("1 - doc1" in output)
+        self.assertTrue("2 - doc2" in output)
+
+        self.assertTrue("sample contents" in output)
+
+
+    # def test_handle_view_document_prints_doc_to_console(self):
+    #     doc_creator = DocumentCreator(TEST_DOCUMENT_REPO_PATH)
+    #     doc_creator.create_new_text_file_if_doesnt_exist("doc5")
+    #     with open("doc5.txt", "w") as d:
+    #         d.write("This is a doc.")
+
+    #     self.assertTrue(True)
     
