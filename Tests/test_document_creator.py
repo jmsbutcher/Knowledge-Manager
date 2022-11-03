@@ -2,7 +2,7 @@
 
 import os
 
-from KnowledgeManager.DocumentManagers.document_creator import DocumentCreator, FilenameAlreadyExistsError
+from KnowledgeManager.DocumentManagement.document_creator import DocumentCreator, FilenameAlreadyExistsError
 from test_base import TestBase, TEST_DOCUMENT_REPO_PATH
 
 

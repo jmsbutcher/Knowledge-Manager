@@ -3,8 +3,8 @@
 import sys
 sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager")
 
-from KnowledgeManager.DocumentManagers.document_creator import DocumentCreator
-from KnowledgeManager.DocumentManagers.document_viewer import DocumentViewer, FilenameNotFoundError
+from KnowledgeManager.DocumentManagement.document_creator import DocumentCreator
+from KnowledgeManager.DocumentManagement.document_viewer import DocumentViewer, FilenameNotFoundError
 from KnowledgeManager.Utils.common_functions import print_banner_line
 from test_base import TestBase, TEST_DOCUMENT_REPO_PATH
 from common_test_functions import capture_output
@@ -53,6 +53,7 @@ class TestDocumentViewer(TestBase):
         text_returned = self.doc_viewer.get_document_contents(sample_filename)
 
         self.assertEqual(text_returned, sample_text)
+
 
     def test_document_viewer_prints_bannered_document_to_console(self):
         """ 

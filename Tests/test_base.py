@@ -14,14 +14,19 @@ import shutil
 import unittest
 from pathlib import Path
 
+print(os.getcwd())
+
 # Temporary disposable directory for performing folder and file creation tests
 TEST_DIRECTORY_NAME = "test_dir"
 TEST_DIRECTORY_PATH = Path.cwd() / Path(TEST_DIRECTORY_NAME)
+
+print("Test directory path: ", TEST_DIRECTORY_PATH)
 
 # Temporary document repo directory within the temporary test directory
 TEST_DOCUMENT_REPO_NAME = "test_doc_repo"
 TEST_DOCUMENT_REPO_PATH = TEST_DIRECTORY_PATH / TEST_DOCUMENT_REPO_NAME
 
+print("Test directory path: ", TEST_DOCUMENT_REPO_PATH)
 
 
 def set_up_test_dir():

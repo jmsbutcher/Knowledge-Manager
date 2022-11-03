@@ -1,0 +1,4 @@
+10/29/22
+
+
+Working on load documents functionality in DocumentManager, integrating new Document class into rest of program

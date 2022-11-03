@@ -1,0 +1,9 @@
+11/2/22
+James Butcher
+This is a test document for testing out category filtering.
+Make sure the below identifier "#Category" is found no matter
+where in the document it appears.
+
+#Category: Tests
+
+That's it.

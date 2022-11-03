@@ -26,3 +26,4 @@ class DocumentHandlerBase:
         if filename[-4:] != ".txt":
             filename = filename + ".txt"
         return filename
+

@@ -3,7 +3,7 @@
 import sys
 sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager")
 
-from KnowledgeManager.DocumentManagers.document_editor import DocumentEditor
+from KnowledgeManager.DocumentManagement.document_editor import DocumentEditor
 from test_base import TestBase, TEST_DOCUMENT_REPO_PATH
 
 

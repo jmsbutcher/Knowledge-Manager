@@ -1,0 +1,5 @@
+#Category: Tests
+
+This is my document.
+There are many like it.
+But this one is mine.

@@ -8,8 +8,8 @@ import sys
 
 sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager/KnowledgeManager")
 
-from DocumentManagers.document_handler_base import DocumentHandlerBase
-from DocumentManagers.document_exceptions import FilenameNotFoundError
+from DocumentManagement.document_handler_base import DocumentHandlerBase
+from DocumentManagement.document_exceptions import FilenameNotFoundError
 
 
 class DocumentEditor(DocumentHandlerBase):

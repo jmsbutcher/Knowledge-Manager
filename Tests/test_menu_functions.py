@@ -12,7 +12,7 @@ from KnowledgeManager.menu_functions import \
     display_menu, \
     handle_create_new_document, \
     handle_view_document
-from KnowledgeManager.DocumentManagers.document_creator import DocumentCreator
+from KnowledgeManager.DocumentManagement.document_creator import DocumentCreator
 
 from test_base import TestBase, TEST_DOCUMENT_REPO_PATH
 from common_test_functions import capture_output
@@ -38,26 +38,26 @@ class TestMenu(TestBase):
         output = capture_output(display_menu)
         self.assertNotEqual(output, "")
 
-    @patch('builtins.input', side_effect=['doc', '1', "q"])
-    def test_handle_view_document_error_when_document_doesnt_exist(self, mock_inputs):
+    # @patch('builtins.input', side_effect=['doc', '1', "q"])
+    # def test_handle_view_document_error_when_document_doesnt_exist(self, mock_inputs):
 
-        doc_creator = DocumentCreator(TEST_DOCUMENT_REPO_PATH)
-        doc_creator.create_new_text_file_if_doesnt_exist("doc1")
-        doc_creator.create_new_text_file_if_doesnt_exist("doc2")
-        with open(TEST_DOCUMENT_REPO_PATH / "doc1.txt", "w") as d:
-            d.write("sample contents")
+    #     doc_creator = DocumentCreator(TEST_DOCUMENT_REPO_PATH)
+    #     doc_creator.create_new_text_file_if_doesnt_exist("doc1")
+    #     doc_creator.create_new_text_file_if_doesnt_exist("doc2")
+    #     with open(TEST_DOCUMENT_REPO_PATH / "doc1.txt", "w") as d:
+    #         d.write("sample contents")
 
-        #with patch('builtins.input', return_value='doc'):
-        #with patch('builtins.input', side_effect=["doc", "1"]):
+    #     #with patch('builtins.input', return_value='doc'):
+    #     #with patch('builtins.input', side_effect=["doc", "1"]):
 
-        output = capture_output(handle_view_document)
+    #     output = capture_output(handle_view_document)
 
-        #self.assertEqual("1 - doc1", output)
+    #     #self.assertEqual("1 - doc1", output)
 
-        self.assertTrue("1 - doc1" in output)
-        self.assertTrue("2 - doc2" in output)
+    #     self.assertTrue("1 - doc1" in output)
+    #     self.assertTrue("2 - doc2" in output)
 
-        self.assertTrue("sample contents" in output)
+    #     self.assertTrue("sample contents" in output)
 
 
     # def test_handle_view_document_prints_doc_to_console(self):
