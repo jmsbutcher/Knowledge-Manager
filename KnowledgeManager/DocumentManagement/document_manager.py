@@ -63,6 +63,19 @@ class DocumentManager(DocumentHandlerBase):
     
 
     def _get_value_after_identifier(self, doc_path, identifier):
+        """ 
+        Returns string after identifier if found in the doc path
+        
+        Example:
+            doc_path = "Path/document.txt"
+            identifier = "#Category:"
+            > opens document.txt:
+                ...
+                #Category: Fiction
+                ...
+
+            > returns "Fiction"
+        """
         with open(doc_path, "r") as doc:
             for line in doc.readlines():
                 # Find line that contains identifier, e.g., "#Category:"
@@ -80,6 +93,11 @@ class DocumentManager(DocumentHandlerBase):
 
 
     def _extract_doc_name_from_path(self, doc_path, remove_extension=True):
+        """ Extracts just the name from the file path
+        Example: 
+            doc_path = "C:/Users/Documents/my_doc.txt"
+            > returns "my_doc"
+        """
         # Remove path prefix, e.g.: "C://Documents/doc.txt"  -->  "doc.txt" 
         path_prefix = str(self._document_repo_path) + "\\"
         doc_name_with_extension = str(doc_path).replace(path_prefix, "")
@@ -91,6 +109,17 @@ class DocumentManager(DocumentHandlerBase):
             return doc_name 
         else:
             return doc_name_with_extension
+
+
+    def get_documents(self):
+        return self._list_of_documents
+
+
+    def get_document_by_name(self, name):
+        for doc in self._list_of_documents:
+            if name == doc.name:
+                return doc 
+        raise FileNotFoundError
 
 
     def get_list_of_document_names(self):
@@ -110,25 +139,23 @@ class DocumentManager(DocumentHandlerBase):
         return list(keywords_set)
 
 
-    def search_for_document(self, name_substring):
+    def search_for_document(self, name_substring, return_name_only=True):
         """ 
         Return a list of documents with names 
         that contain the given substring 
         """
-        matches = []
-        for doc in self.get_list_of_document_names():
-            if name_substring in doc:
-                matches.append(doc)
-        return matches
+        if return_name_only:
+            doc_names = self.get_list_of_document_names()
+            return [doc_name for doc_name in doc_names \
+                 if name_substring in doc_name]
+        else:
+            return[doc for doc in self._list_of_documents \
+                if name_substring in doc.name]
 
 
     def filter_documents_by_category(self, category):
         """ Return a list of documents with the given category """
-        matches = []
-        for doc in self._list_of_documents:
-            if doc.category == category:
-                matches.append(doc)
-        return matches
+        return [doc for doc in self._list_of_documents if doc.category == category]
 
 
     def filter_documents_by_keyword(self, keywords):
@@ -139,18 +166,19 @@ class DocumentManager(DocumentHandlerBase):
         """
         matches = []
 
-        # Filter out documents that don't have ALL keywords
+        # If multiple keywords, filter out documents that don't have ALL keywords
         if (isinstance(keywords, list)):
 
             for doc in self._list_of_documents.copy():
-                all_keywords_found = True
+                all_keywords_present = True
                 for keyword in keywords:
                     if keyword not in doc.keywords:
-                        all_keywords_found = False
+                        all_keywords_present = False
                         break
-                if all_keywords_found:
+                if all_keywords_present:
                     matches.append(doc)
 
+        # If just one keyword, filter out documents that don't contain the keyword
         else:
 
             for doc in self._list_of_documents.copy():

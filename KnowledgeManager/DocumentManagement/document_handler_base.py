@@ -23,6 +23,7 @@ class DocumentHandlerBase:
             return False
 
     def _ensure_dot_txt_suffix(self, filename):
+        assert isinstance(filename, str)
         if filename[-4:] != ".txt":
             filename = filename + ".txt"
         return filename

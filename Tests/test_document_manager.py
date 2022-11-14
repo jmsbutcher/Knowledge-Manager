@@ -4,6 +4,7 @@ from platform import java_ver
 import sys
 sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager")
 
+from KnowledgeManager.DocumentManagement.document import Document
 from KnowledgeManager.DocumentManagement.document_manager import DocumentManager
 from KnowledgeManager.DocumentManagement.document_creator import DocumentCreator
 from test_base import TestBase, TEST_DOCUMENT_REPO_PATH, TEST_DIRECTORY_PATH
@@ -156,6 +157,22 @@ class TestDocumentManager(TestBase):
         self.assertEqual(doc._repo_path, TEST_DOCUMENT_REPO_PATH)
         self.assertEqual(doc.contents, 
             "...random contents...\n...more random contents...")
+
+
+    def test_get_document_by_name_returns_document(self):
+        doc_creator = DocumentCreator(TEST_DOCUMENT_REPO_PATH)
+        doc_creator.create_new_text_file_if_doesnt_exist("test_doc1")
+        doc_manager = DocumentManager(TEST_DOCUMENT_REPO_PATH)
+        doc = doc_manager.get_document_by_name("test_doc1")
+        self.assertEquals(doc.name, "test_doc1")
+
+
+    def test_get_document_by_name_when_doesnt_exist_return_exception(self):
+        doc_creator = DocumentCreator(TEST_DOCUMENT_REPO_PATH)
+        doc_creator.create_new_text_file_if_doesnt_exist("test_doc1")
+        doc_manager = DocumentManager(TEST_DOCUMENT_REPO_PATH)
+        #doc = doc_manager.get_document_by_name("test_doc2")
+        self.assertRaises(FileNotFoundError, doc_manager.get_document_by_name, "test_d")
 
 
     def test_filter_documents_by_category_returns_correct_documents(self):
