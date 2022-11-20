@@ -1,5 +1,6 @@
 # 10/29/22
 
+from pathlib import Path
 
 class Document:
     """ 
@@ -26,6 +27,7 @@ class Document:
 
     def __init__(self, repo_path, name):
         self._repo_path = repo_path
+        self.path = Path(repo_path) / name
         self.name = name
         self.contents = None
         self.category = None

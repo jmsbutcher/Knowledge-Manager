@@ -55,5 +55,12 @@ def extract_trailing_int(target_string, prefix=""):
         raise PrefixNotFoundException(prefix, target_string)
 
 
+def ensure_dot_txt_suffix(filename):
+    assert isinstance(filename, str)
+    if filename[-4:] != ".txt":
+        filename = filename + ".txt"
+    return filename
+
+
 if __name__ == "__main__":
     print(extract_trailing_int("New Document 123", ""))

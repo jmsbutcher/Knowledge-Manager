@@ -4,8 +4,11 @@ from tkinter import BOTH, CENTER, Frame, Label, Tk, ttk, VERTICAL, Y
 
 from DocumentManagement.document_editor import DocumentEditor
 from DocumentManagement.document_manager import DocumentManager
-#from DocumentManagement.document import Document
+
 from globals import DEFAULT_DOCUMENT_REPO_PATH
+
+from document_details_frame import DocumentDetailsFrame
+from gui_functions import format_attribute
 
 
 class DocumentListFrame(Frame):
@@ -16,9 +19,10 @@ class DocumentListFrame(Frame):
     in columns (e.g., Name, Author, Date, Category, keyword, etc.)
     """
 
-    def __init__(self, master):
+    def __init__(self, master, doc_details_frame_ref):
         Frame.__init__(self, master)
         self.master = master 
+        self.doc_details_frame_ref = doc_details_frame_ref
 
         self.treeview = ttk.Treeview(self.master)
         self.treeview["columns"] = (\
@@ -39,8 +43,8 @@ class DocumentListFrame(Frame):
         scrollbar.pack(side="right", fill=Y)
 
         self.treeview.pack(padx=5, pady=5, fill=BOTH, expand=1)
-        #self.treeview.bind("<<TreeviewSelect>>", self._document_selected)
-        self.treeview.bind("<Double-1>", self._document_selected)
+        self.treeview.bind("<<TreeviewSelect>>", self._load_document_details)
+        self.treeview.bind("<Double-1>", self._open_document_in_editor)
 
         self.load_documents()
 
@@ -56,8 +60,8 @@ class DocumentListFrame(Frame):
         for doc in docs_to_load:
 
             vals = (\
-                self._format_value(doc.category), 
-                self._format_value(doc.keywords)
+                format_attribute(doc.category), 
+                format_attribute(doc.keywords)
                 )
             self.treeview.insert("", "end", text=doc.name, values=vals, tags=CENTER)
 
@@ -75,7 +79,14 @@ class DocumentListFrame(Frame):
             self.treeview.delete(item)
 
 
-    def _document_selected(self, event):
+    def _load_document_details(self, event):
+        for selected_document in self.treeview.selection():
+            document = self.treeview.item(selected_document)
+            doc_name = document["text"]
+            self.doc_details_frame_ref.load_document(doc_name)
+
+
+    def _open_document_in_editor(self, event):
         for selected_document in self.treeview.selection():
             document = self.treeview.item(selected_document)
             print(document)

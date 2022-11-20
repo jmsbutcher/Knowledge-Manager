@@ -1,13 +1,11 @@
 # 10/9/22
 
-from platform import java_ver
 import sys
 sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager")
 
-from KnowledgeManager.DocumentManagement.document import Document
 from KnowledgeManager.DocumentManagement.document_manager import DocumentManager
 from KnowledgeManager.DocumentManagement.document_creator import DocumentCreator
-from test_base import TestBase, TEST_DOCUMENT_REPO_PATH, TEST_DIRECTORY_PATH
+from test_base import TestBase, TEST_DOCUMENT_REPO_PATH
 
 
 class TestDocumentManager(TestBase):

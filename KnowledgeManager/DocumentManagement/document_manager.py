@@ -5,6 +5,9 @@ import glob
 import sys
 sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager/KnowledgeManager")
 
+from DocumentManagement.AttributeManagement.category_interface import CategoryInterface
+from DocumentManagement.AttributeManagement.keywords_interface import KeywordsInterface
+
 from DocumentManagement.document_handler_base import DocumentHandlerBase
 from DocumentManagement.document import Document
 
@@ -31,8 +34,12 @@ class DocumentManager(DocumentHandlerBase):
         """ Load a new document object from the text file at [doc_path] """
         doc_name = self._extract_doc_name_from_path(doc_path)
         doc = Document(self._document_repo_path, doc_name)
-        doc.category = self._load_doc_category(doc_path)
-        doc.keywords = self._load_doc_keywords(doc_path)
+        #doc.category = self._load_doc_category(doc_path)
+        CategoryInterface(doc).load()
+        KeywordsInterface(doc).load()
+        # category_interface = CategoryInterface(doc)
+        # category_interface.load()
+        # doc.keywords = self._load_doc_keywords(doc_path)
         doc.contents = self._load_doc_contents(doc_path)
         return doc
 

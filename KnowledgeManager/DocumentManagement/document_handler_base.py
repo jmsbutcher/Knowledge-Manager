@@ -3,6 +3,7 @@
 import os
 from pathlib import Path
 
+from Utils.common_functions import ensure_dot_txt_suffix
 
 class DocumentHandlerBase:
 
@@ -23,8 +24,9 @@ class DocumentHandlerBase:
             return False
 
     def _ensure_dot_txt_suffix(self, filename):
-        assert isinstance(filename, str)
-        if filename[-4:] != ".txt":
-            filename = filename + ".txt"
-        return filename
+    #     assert isinstance(filename, str)
+    #     if filename[-4:] != ".txt":
+    #         filename = filename + ".txt"
+    #     return filename
+        return ensure_dot_txt_suffix(filename)
 
