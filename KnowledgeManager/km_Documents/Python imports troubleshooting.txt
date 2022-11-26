@@ -1,0 +1,26 @@
+#Keywords: Python
+#Category: Help
+
+11/26/22
+James Butcher
+
+What to do when you try installing a library using pip, but then Python can't find it when you try to import it.
+
+Example:
+	> pip install pathlib
+	installed successfully
+
+	> python
+	>>> import pathlib
+	ImportError: No module named pathlib
+
+
+Resources:
+
+- https://realpython.com/lessons/why-cant-python-find-my-modules/
+
+
+Things to try:
+
+- Try using python3 instead of python
+
