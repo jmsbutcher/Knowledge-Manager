@@ -41,16 +41,16 @@ def add_new_document():
     doc_editor.open_document_in_text_editor(default_doc_name)
 
 
-def format_attribute(attribute):
-    """ 
-    Convert document value into appropriate string representation
+# def format_attribute(attribute):
+#     """ 
+#     Convert document value into appropriate string representation
 
-    - Lists are converted into comma-separated values
-    - None is converted into an empty string
-    """
-    if attribute is None:
-        return ""
-    elif isinstance(attribute, list):
-        return ", ".join(attribute)
-    else:
-        return attribute
+#     - Lists are converted into comma-separated values
+#     - None is converted into an empty string
+#     """
+#     if attribute is None:
+#         return ""
+#     elif isinstance(attribute, list):
+#         return ", ".join(attribute)
+#     else:
+#         return attribute

@@ -1,13 +1,18 @@
 # 11/19/22
 
+from DocumentManagement.AttributeManagement.name_interface import NameInterface
+from DocumentManagement.AttributeManagement.content_interface import ContentInterface
+from DocumentManagement.AttributeManagement.category_interface import CategoryInterface
+from DocumentManagement.AttributeManagement.keywords_interface import KeywordsInterface
+
 from DocumentManagement.document_deletor import DocumentDeletor
 from DocumentManagement.document_editor import DocumentEditor
 from DocumentManagement.document_manager import DocumentManager
 from DocumentManagement.document_exceptions import FilenameNotFoundError
+
 from globals import DEFAULT_DOCUMENT_REPO_PATH
 
 from tkinter import Button, Entry, Frame, Label, StringVar, Text, ttk
-from gui_functions import format_attribute
 from gui_resources import *
 
 class DocumentDetailsFrame(Frame):
@@ -19,6 +24,14 @@ class DocumentDetailsFrame(Frame):
 
         # Reference to the document list frame, so it can be updated
         self.doc_list_frame_ref = None
+
+        # Document attribute interfaces
+        self.name_I = None
+        self.category_I = None
+        self.keywords_I = None 
+        self.content_I = None
+
+        #self.current_document = None
 
         # ---------------------------------------------------------------------
         # Attributes Panel - Controls for changing document attributes
@@ -107,10 +120,6 @@ class DocumentDetailsFrame(Frame):
 
 
     def clear(self):
-        # self.name_var = ""
-        # self.category_var = ""
-        # self.keywords_var = ""
-
         self.doc_name_entry.delete(0, "end")
         self.category_entry.delete(0, "end")
         self.keywords_entry.delete(0, "end")
@@ -122,20 +131,38 @@ class DocumentDetailsFrame(Frame):
 
     def load_document(self, doc_name):
         self.clear()
+
         doc_manager = DocumentManager(DEFAULT_DOCUMENT_REPO_PATH)
-        document = doc_manager.get_document_by_name(doc_name)
-        self.doc_name_entry.insert(0, format_attribute(document.name))
-        self.category_entry.insert(0, format_attribute(document.category))
-        self.keywords_entry.insert(0, format_attribute(document.keywords))
+        #self.current_document = doc_manager.get_document_by_name(doc_name)
+        doc = doc_manager.get_document_by_name(doc_name)
+
+        self.name_I = NameInterface(doc)
+        self.name_I.load()
+        self.doc_name_entry.insert(0, self.name_I.get())
+
+        self.category_I = CategoryInterface(doc)
+        self.category_I.load()
+        self.category_entry.insert(0, self.category_I.get())
+
+        self.keywords_I = KeywordsInterface(doc)
+        self.keywords_I.load()
+        self.keywords_entry.insert(0, self.keywords_I.get())
+
+        self.content_I = ContentInterface(doc)
+        self.content_I.load()
         self.contents_text.delete("1.0", "end")
-        self.contents_text.insert("1.0", document.contents)
+        self.contents_text.insert("1.0", self.content_I.get())
 
         self.delete_button["state"] = "normal"
 
 
     def save_document(self):
-
+        self.name_I.set(self.doc_name_entry.get())
+        self.category_I.set(self.category_entry.get())
+        self.keywords_I.set(self.keywords_entry.get())
+        self.content_I.set(self.contents_text.get("1.0", "end"))
         print("Saved document")
+        self.doc_list_frame_ref.load_documents()
 
 
     def delete_document(self):

@@ -5,13 +5,14 @@ from .attribute_interface import AttributeInterface
 
 class KeywordsInterface(AttributeInterface):
 
+    name = "Keywords"
+
     def __init__(self, document):
         super().__init__(identifier="#Keywords:", document=document)
         self.document = document
-        self.name = "Keywords"
 
     def __str__(self):
-        return ", ".join(self.document.keywords)
+        return ", ".join(self.get())
 
 
     def load(self):
@@ -21,15 +22,26 @@ class KeywordsInterface(AttributeInterface):
         else:
             self.document.keywords = [kw.strip() for kw in kw_str.split(',')]
 
-    def set(self, keywords):
-        if isinstance(keywords, list):
-            kw_str = ", ".join(keywords)
+    def set(self, new_keywords):
+        if isinstance(new_keywords, list):
+            kw_str = ", ".join(new_keywords)
             self._set_value_after_identifier(kw_str)
-        elif isinstance(keywords, str):
-            self._set_value_after_identifier(kw_str)
+        elif isinstance(new_keywords, str):
+            self._set_value_after_identifier(new_keywords)
+        self.load()
 
     def get(self):
         return self.document.keywords
+
+    def add(self, new_keyword):
+        keywords = self.get()
+        keywords.append(new_keyword)
+        self.set(keywords)
+
+    def remove(self, keyword_to_remove):
+        keywords = self.get()
+        keywords.remove(keyword_to_remove)
+        self.set(keywords)
 
     
     

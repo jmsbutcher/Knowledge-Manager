@@ -5,9 +5,9 @@ from pathlib import Path
 class Document:
     """ 
     Represents a text document
-    
-    _repo_path: path to the folder where the actual text document is stored
-        e.g., "C://Documents/KnowledgeManager/my_repo/"
+
+    path: the path to the text document
+        e.g., "C:/Documents/my_document.txt"
 
     name: the name of the text document
         e.g., "my_document"
@@ -24,14 +24,10 @@ class Document:
         e.g., "Keywords: Shopping, Disposable"
 
     """
-
-    def __init__(self, repo_path, name):
-        self._repo_path = repo_path
-        self.path = Path(repo_path) / name
-        self.name = name
+    def __init__(self, filepath):
+        self.path = Path(filepath)
+        self.name = None
         self.contents = None
         self.category = None
         self.keywords = [] 
-
-
     

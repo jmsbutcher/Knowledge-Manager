@@ -1,36 +1,72 @@
 # 11/19/22
 
+import sys
+sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager/KnowledgeManager")
+
+
 from Utils.common_functions import ensure_dot_txt_suffix
 
-class InterfaceImplementationError:
+
+class InterfaceImplementationError(Exception):
     """ Used abstract base class as a concrete class, or 
     derived class failed to override an abstract method"""
 
 
+class DocumentPathMissingError(Exception):
+    """ Raise when trying to pass a document object to an attribute
+    interface when the document's path attribute hasn't been set. """
+
+
 class AttributeInterface:
-    """ Abstract interface for handling document attribute reading and writing """
+    """ Abstract interface for handling document attribute reading and writing
+    
+        Derive from this interface with a specific document attribute to handle.
+        Example: CategoryInterface(AttributeInterface) for handling a document's
+        category.
+
+        Input: a Document object
+          *** The document object MUST have its path attribute set. This is how
+              the attribute interfaces will load the other attributes.
+
+        load() -- loads the document attribute str extracted from the document's
+            physical file (defined by the document's [path] attribute) 
+            into the local document object's attribute.
+
+        set(new_value) -- overwrite the attribute value, or create it
+
+        get() -- return the attribute value stored in the local document object
+     """
 
     def __init__(self, identifier, document):
         self.identifier = identifier
         self.document = document
-        self.doc_path = ensure_dot_txt_suffix(str(self.document.path))
+        if document.path is None or document.path == "":
+            raise DocumentPathMissingError
+        #self.doc_path = Path(ensure_dot_txt_suffix(str(self.document.path)))
 
     # pure virtual method - must override
     def __str__(self):
         raise InterfaceImplementationError
+    
+    # pure virtual method - must override
+    def load(self):
+        raise InterfaceImplementationError
 
-    def _load_attribute(self):
-        pass
+    # pure virtual method - must override
+    def set(self, new_value):
+        raise InterfaceImplementationError
 
-    def _set_attribute(self):
-        pass
+    # pure virtual method - must override
+    def get(self):
+        raise InterfaceImplementationError
+
 
     def _get_value_after_identifier(self):
         """ Returns string after identifier if found in the doc path
         Example:   #Category: Fiction
                    > returns "Fiction"
         """
-        with open(self.doc_path, "r") as doc:
+        with open(self.document.path, "r") as doc:
             for line in doc.readlines():
                 # Find line that contains identifier, e.g., "#Category:"
                 if (line.find(self.identifier) != -1):
@@ -57,10 +93,10 @@ class AttributeInterface:
         assert(isinstance(value, str))
 
         lines = []
-        with open(self.doc_path, "r") as doc:
+        with open(self.document.path, "r") as doc:
             lines = doc.readlines()
 
-        with open(self.doc_path, "w") as doc:
+        with open(self.document.path, "w") as doc:
             replacement_line = self.identifier + " " + value + '\n'
             for line_num, line in enumerate(lines):
                 if self.identifier in line:
@@ -72,18 +108,8 @@ class AttributeInterface:
             doc.write(replacement_line)
             doc.writelines(lines)
 
-
-    # pure virtual method - must override
-    def load(self):
-        raise InterfaceImplementationError
-
-    # pure virtual method - must override
-    def set(self):
-        raise InterfaceImplementationError
-
-    # pure virtual method - must override
-    def get(self):
-        raise InterfaceImplementationError
+        # Update document object's attribute by reading the just written value
+        #self._get_value_after_identifier()
 
 
 

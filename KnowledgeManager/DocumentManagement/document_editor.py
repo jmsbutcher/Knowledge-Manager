@@ -32,20 +32,3 @@ class DocumentEditor(DocumentHandlerBase):
             os.startfile(filepath)
         else:                               # Linux vairants
             subprocess.call(("xdg-open", filepath))
-
-
-    def rename_document(self, doc_name, new_doc_name):
-        # Validate filename and add ".txt" if not already there
-        doc_name = self._ensure_dot_txt_suffix(doc_name)
-        new_doc_name = self._ensure_dot_txt_suffix(new_doc_name)
-        if self._filename_exists(doc_name):
-            old_path = self._document_repo_path / doc_name
-            new_path = self._document_repo_path / new_doc_name
-            os.rename(old_path, new_path)
-        else:
-            raise FilenameNotFoundError(doc_name)
-        
-
-    def set_category(self, doc_name, category):
-        doc_name = self._ensure_dot_txt_suffix(doc_name)
-        

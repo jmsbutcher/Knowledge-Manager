@@ -1,10 +1,12 @@
 # 10/9/22
 
+from pathlib import Path
 import glob
-
 import sys
 sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager/KnowledgeManager")
 
+from DocumentManagement.AttributeManagement.name_interface import NameInterface
+from DocumentManagement.AttributeManagement.content_interface import ContentInterface
 from DocumentManagement.AttributeManagement.category_interface import CategoryInterface
 from DocumentManagement.AttributeManagement.keywords_interface import KeywordsInterface
 
@@ -22,100 +24,16 @@ class DocumentManager(DocumentHandlerBase):
         super().__init__(document_repo_path)
         self._list_of_documents = self._load_documents() # Document paths
     
-
     def _load_documents(self):
         documents = []
         for doc_path in glob.glob(str(self._document_repo_path) + "/*"):
-            documents.append(self._load_document_from_path(doc_path))
+            new_doc = Document(Path(doc_path))
+            NameInterface(new_doc).load()
+            ContentInterface(new_doc).load()
+            CategoryInterface(new_doc).load()
+            KeywordsInterface(new_doc).load()
+            documents.append(new_doc)
         return documents
-
-
-    def _load_document_from_path(self, doc_path):
-        """ Load a new document object from the text file at [doc_path] """
-        doc_name = self._extract_doc_name_from_path(doc_path)
-        doc = Document(self._document_repo_path, doc_name)
-        #doc.category = self._load_doc_category(doc_path)
-        CategoryInterface(doc).load()
-        KeywordsInterface(doc).load()
-        # category_interface = CategoryInterface(doc)
-        # category_interface.load()
-        # doc.keywords = self._load_doc_keywords(doc_path)
-        doc.contents = self._load_doc_contents(doc_path)
-        return doc
-
-
-    def _load_doc_category(self, doc_path):
-        return self._get_value_after_identifier(doc_path, self.CATEGORY_IDENTIFIER)
-
-
-    def _load_doc_keywords(self, doc_path):
-        keywords_string = self._get_value_after_identifier( \
-            doc_path, self.KEYWORDS_IDENTIFIER)
-        if keywords_string is None:
-            return []
-        return [keyword.strip() for keyword in keywords_string.split(',')]
-
-
-    def _load_doc_contents(self, doc_path):
-        """ Get all contents, excluding special identifier lines like category """
-        contents = ""
-        with open(doc_path, "r") as doc:
-            for line in doc.readlines():
-                if  self.CATEGORY_IDENTIFIER in line or \
-                    self.KEYWORDS_IDENTIFIER in line:
-                    continue 
-                else:
-                    contents += line
-        return contents
-    
-
-    def _get_value_after_identifier(self, doc_path, identifier):
-        """ 
-        Returns string after identifier if found in the doc path
-        
-        Example:
-            doc_path = "Path/document.txt"
-            identifier = "#Category:"
-            > opens document.txt:
-                ...
-                #Category: Fiction
-                ...
-
-            > returns "Fiction"
-        """
-        with open(doc_path, "r") as doc:
-            for line in doc.readlines():
-                # Find line that contains identifier, e.g., "#Category:"
-                if (line.find(identifier) != -1):
-                    # Extract the string after the identifier
-                    _, _, value = line.partition(identifier)
-                    value = value.strip(' ')
-
-                    # Return none if field after identifier is empty 
-                    # (i.e., just contains a newline)
-                    if len(value) > 0:
-                        if value [0] == '\n':
-                            return None
-                    return value.strip()
-
-
-    def _extract_doc_name_from_path(self, doc_path, remove_extension=True):
-        """ Extracts just the name from the file path
-        Example: 
-            doc_path = "C:/Users/Documents/my_doc.txt"
-            > returns "my_doc"
-        """
-        # Remove path prefix, e.g.: "C://Documents/doc.txt"  -->  "doc.txt" 
-        path_prefix = str(self._document_repo_path) + "\\"
-        doc_name_with_extension = str(doc_path).replace(path_prefix, "")
-
-        if remove_extension:
-            # Extract all characters up to the first "."
-            ext_begin_index = doc_name_with_extension.find(".")
-            doc_name = doc_name_with_extension[0 : ext_begin_index]
-            return doc_name 
-        else:
-            return doc_name_with_extension
 
 
     def get_documents(self):
