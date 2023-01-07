@@ -19,6 +19,7 @@ class MainWindow(Frame):
 
         # ---------------------------------------------------------------------
         # Main Window - Contains top control panel, filters panel, and doc list
+        
         self.main_window = Frame(self.master,
             STANDARD_FRAME_ATTRIBUTES,
             width=400, height=400)

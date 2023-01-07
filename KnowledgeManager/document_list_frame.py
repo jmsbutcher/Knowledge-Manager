@@ -58,7 +58,6 @@ class DocumentListFrame(Frame):
     def load_documents(self):
         self._clear_list()
         for doc in doc_manager.get_documents():
-            #vals = [att(doc).get() for att in self.attributes]
             vals = [str(att(doc)) for att in self.attributes]
             self.treeview.insert("", "end", text=doc.name, values=vals, tags=CENTER)
 
