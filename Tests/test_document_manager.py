@@ -37,7 +37,7 @@ class TestDocumentManager(TestBase):
         # Create the document manager
         doc_manager = DocumentManager(TEST_DOCUMENT_REPO_PATH)
 
-        document_names = doc_manager.get_list_of_document_names()
+        document_names = doc_manager.get_list_of_names()
 
         # Check if document manager loaded the two documents
         self.assertEqual(document_names[0], "test_doc1")
@@ -162,24 +162,24 @@ class TestDocumentManager(TestBase):
 
         # Should have no matches
         matching_kw_documents = \
-            doc_manager.filter_documents_by_keyword("nonexistent_keyword")
+            doc_manager.filter_by_keyword("nonexistent_keyword")
         self.assertEqual(len(matching_kw_documents), 0)
 
         # Should have 1 match
         matching_kw_documents = \
-            doc_manager.filter_documents_by_keyword("kw1")
+            doc_manager.filter_by_keyword("kw1")
         self.assertEqual(len(matching_kw_documents), 1)
         self.assertEqual(matching_kw_documents[0].name, "test_doc3")
 
         # Should have 1 match
         matching_kw_documents = \
-            doc_manager.filter_documents_by_keyword("kw3")
+            doc_manager.filter_by_keyword("kw3")
         self.assertEqual(len(matching_kw_documents), 1)
         self.assertEqual(matching_kw_documents[0].name, "test_doc5")
 
         # Should have 2 matches
         matching_kw_documents = \
-            doc_manager.filter_documents_by_keyword("kw2")
+            doc_manager.filter_by_keyword("kw2")
         matching_kw_doc_names = [d.name for d in matching_kw_documents]
         self.assertEqual(len(matching_kw_documents), 2)
         self.assertTrue("test_doc4" in matching_kw_doc_names)
@@ -187,6 +187,6 @@ class TestDocumentManager(TestBase):
 
         # Should have 1 match
         matching_kw_documents = \
-            doc_manager.filter_documents_by_keyword(["kw2", "kw3"])
+            doc_manager.filter_by_keyword(["kw2", "kw3"])
         self.assertEqual(len(matching_kw_documents), 1)
         self.assertTrue("test_doc5" in matching_kw_doc_names)

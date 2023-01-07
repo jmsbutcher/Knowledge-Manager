@@ -3,7 +3,8 @@
 from pathlib import Path
 import glob
 import sys
-sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager/KnowledgeManager")
+#sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager/KnowledgeManager")
+sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager")
 
 from DocumentManagement.AttributeManagement.name_interface import NameInterface
 from DocumentManagement.AttributeManagement.content_interface import ContentInterface
@@ -17,27 +18,53 @@ from DocumentManagement.document import Document
 class DocumentManager(DocumentHandlerBase):
     """ Responsible for listing, loading, and searching for documents """
 
-    CATEGORY_IDENTIFIER = "#Category:"
-    KEYWORDS_IDENTIFIER = "#Keywords:"
-
     def __init__(self, document_repo_path):
         super().__init__(document_repo_path)
-        self._list_of_documents = self._load_documents() # Document paths
+        self._list_of_documents = []
+        self.load_documents()
+        self.active_search_term = ""
+        self.active_filters = {"Category":[], "Keywords":[]}
     
-    def _load_documents(self):
-        documents = []
+    def load_documents(self):
+        self._list_of_documents = []
         for doc_path in glob.glob(str(self._document_repo_path) + "/*"):
             new_doc = Document(Path(doc_path))
             NameInterface(new_doc).load()
             ContentInterface(new_doc).load()
             CategoryInterface(new_doc).load()
             KeywordsInterface(new_doc).load()
-            documents.append(new_doc)
-        return documents
+            self._list_of_documents.append(new_doc)
 
+
+    def set_active_search_term(self, search_term):
+        self.active_search_term = search_term
+
+    def set_active_filters(self, attribute, filters):
+        self.active_filters[attribute] = filters
+
+    def add_active_filter(self, attribute, filter):
+        if filter is not None and filter != "":
+            self.active_filters[attribute].append(filter)
+
+    def remove_active_filter(self, attribute, filter):
+        self.active_filters[attribute].remove(filter)
 
     def get_documents(self):
-        return self._list_of_documents
+        """ Return all documents that meet search and filter criteria """
+        search_matches = self.search_for_document(self.active_search_term, 
+            return_name_only=False)
+        print([doc.name for doc in search_matches])
+        category_matches = self.filter_by_category(self.active_filters["Category"])
+        print([doc.name for doc in category_matches])
+        keywords_matches = self.filter_by_keyword(self.active_filters["Keywords"])
+        print([doc.name for doc in keywords_matches])
+        matches = []
+        for d in self._list_of_documents:
+            if d in search_matches and \
+                d in category_matches and \
+                d in keywords_matches:
+                matches.append(d)
+        return matches
 
 
     def get_document_by_name(self, name):
@@ -47,7 +74,7 @@ class DocumentManager(DocumentHandlerBase):
         raise FileNotFoundError
 
 
-    def get_list_of_document_names(self):
+    def get_list_of_names(self):
         """ Return a list of all the document names in the knowledge repo """
         return [doc.name for doc in self._list_of_documents]
 
@@ -70,7 +97,7 @@ class DocumentManager(DocumentHandlerBase):
         that contain the given substring 
         """
         if return_name_only:
-            doc_names = self.get_list_of_document_names()
+            doc_names = self.get_list_of_names()
             return [doc_name for doc_name in doc_names \
                  if name_substring in doc_name]
         else:
@@ -78,12 +105,19 @@ class DocumentManager(DocumentHandlerBase):
                 if name_substring in doc.name]
 
 
-    def filter_documents_by_category(self, category):
-        """ Return a list of documents with the given category """
-        return [doc for doc in self._list_of_documents if doc.category == category]
+    def filter_by_category(self, category):
+        """ Return a list of documents with the given category
+        Category can be a single category string or a list of categories
+        that are all acceptable. """
+        if category is None or category == []:
+            return self._list_of_documents
+        if isinstance(category, str):
+            return [d for d in self._list_of_documents if d.category == category]
+        elif isinstance(category, list):
+            return [d for d in self._list_of_documents if d.category in category]
 
 
-    def filter_documents_by_keyword(self, keywords):
+    def filter_by_keyword(self, keywords):
         """ 
         Return a list of documents that each have all the keywords listed
         in [keywords] input, which may be either a single keyword string or
@@ -112,19 +146,3 @@ class DocumentManager(DocumentHandlerBase):
 
         return matches
 
-
-
-if __name__ == "__main__":
-
-    from pathlib import Path
-    import os
-    root = Path(os.getcwd())
-    doc_repo = root / "KnowledgeManager" / "km_Documents"
-    print(doc_repo)
-
-    doc_manager = DocumentManager(doc_repo)
-
-    print(doc_manager.get_list_of_document_names())
-    print(doc_manager.filter_documents_by_category("gopher")[0].name)
-
-    

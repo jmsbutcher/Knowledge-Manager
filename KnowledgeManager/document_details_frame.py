@@ -6,11 +6,9 @@ from DocumentManagement.AttributeManagement.category_interface import CategoryIn
 from DocumentManagement.AttributeManagement.keywords_interface import KeywordsInterface
 
 from DocumentManagement.document_deletor import DocumentDeletor
-from DocumentManagement.document_editor import DocumentEditor
-from DocumentManagement.document_manager import DocumentManager
 from DocumentManagement.document_exceptions import FilenameNotFoundError
 
-from globals import DEFAULT_DOCUMENT_REPO_PATH
+from globals import DEFAULT_DOCUMENT_REPO_PATH, doc_manager
 
 from tkinter import Button, Entry, Frame, Label, StringVar, Text, ttk
 from gui_resources import *
@@ -22,16 +20,14 @@ class DocumentDetailsFrame(Frame):
             STANDARD_FRAME_ATTRIBUTES,
             width=300)
 
-        # Reference to the document list frame, so it can be updated
-        self.doc_list_frame_ref = None
+        # Functions meant to carry out updates upon certain actions
+        self.notifiers = []
 
         # Document attribute interfaces
         self.name_I = None
         self.category_I = None
         self.keywords_I = None 
         self.content_I = None
-
-        #self.current_document = None
 
         # ---------------------------------------------------------------------
         # Attributes Panel - Controls for changing document attributes
@@ -115,8 +111,12 @@ class DocumentDetailsFrame(Frame):
         self.clear()
 
 
-    def set_notifier(self, doc_list_frame_ref):
-        self.doc_list_frame_ref = doc_list_frame_ref
+    def set_notifier(self, notifier_function):
+        self.notifiers.append(notifier_function)
+
+    def notify(self):
+        for notifier_function in self.notifiers:
+            notifier_function()
 
 
     def clear(self):
@@ -132,8 +132,6 @@ class DocumentDetailsFrame(Frame):
     def load_document(self, doc_name):
         self.clear()
 
-        doc_manager = DocumentManager(DEFAULT_DOCUMENT_REPO_PATH)
-        #self.current_document = doc_manager.get_document_by_name(doc_name)
         doc = doc_manager.get_document_by_name(doc_name)
 
         self.name_I = NameInterface(doc)
@@ -162,7 +160,7 @@ class DocumentDetailsFrame(Frame):
         self.keywords_I.set(self.keywords_entry.get())
         self.content_I.set(self.contents_text.get("1.0", "end"))
         print("Saved document")
-        self.doc_list_frame_ref.load_documents()
+        self.notify()
 
 
     def delete_document(self):
@@ -170,10 +168,10 @@ class DocumentDetailsFrame(Frame):
         doc_name = self.name_var.get()
         try:
             doc_deletor.delete(doc_name)
+            doc_manager.load_documents()
         except FilenameNotFoundError:
             print("Document '" + doc_name + "' not found.")
 
-        if self.doc_list_frame_ref is not None:
-            self.doc_list_frame_ref.load_documents()
-
+        self.notify()
         self.clear()
+        

@@ -32,32 +32,25 @@ class ContentInterface(AttributeInterface):
 
 
     def _overwrite_content(self, new_content):
+        # Gather all attribute lines to be written to top of file
         attribute_lines = []
         lines = self._load_entire_file_lines()
         for line in lines:
             if self._is_attribute_line(line):
                 attribute_lines.append(line)
 
-
         with open(self.document.path, "w") as doc:
-            # Write all attribute lines first to top of file
-            # attributes_present = False
-            # for line in self._load_entire_file_lines():
-            #     if self._is_attribute_line(line):
-            #         doc.write(line)
-            #         attributes_present = True
-            # # Write contents after the attributes separated by an empty line
-            # if attributes_present:
-            #     doc.write('\n')
-            # doc.write(new_content)
+            # Write all attribute lines first to top of file (if any)
             if len(attribute_lines) > 0:
                 for line in attribute_lines:
                     doc.write(line)
+                # Separate attributes and contents by a blank line 
                 doc.write('\n')
+            # Write the contents afterward
             doc.write(new_content)
-            
-
+        
         self.load()
+        
 
     def _load_entire_file_lines(self):
         with open(self.document.path, "r") as doc:

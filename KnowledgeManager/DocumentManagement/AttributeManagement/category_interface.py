@@ -4,6 +4,12 @@ from .attribute_interface import AttributeInterface
 
 
 class CategoryInterface(AttributeInterface):
+    """ Handles getting and setting a document's category attribute.
+    
+    A document can have only one category, which acts as a broad, high-level
+    grouping attribute for documents, as opposed to keywords, which are less
+    definitive and act more like tags.
+    """
 
     name = "Category"
 

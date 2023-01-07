@@ -6,7 +6,8 @@ COLOR_DARK_GRAY = "#AAAAAA"
 COLOR_EXTRA_DARK_GRAY = "#888888"
 
 COLOR_MAJOR_ACTION_BUTTON = "#88DDDD" # Turquoise
-COLOR_MINOR_ACTION_BUTTON = COLOR_GRAY # Turquoise
+COLOR_MINOR_ACTION_BUTTON = COLOR_GRAY
+COLOR_BADGE_BUTTON = "#77FF77" # Green
 
 
 # Frames and panels
@@ -22,6 +23,10 @@ STANDARD_PANEL_ATTRIBUTES = {
     "padx":5, 
     "pady":5, 
     "relief":"groove", 
+    "bg":COLOR_LIGHT_GRAY
+}
+
+INNER_PANEL_ATTRIBUTES = {
     "bg":COLOR_LIGHT_GRAY
 }
 
@@ -69,5 +74,14 @@ SECONDARY_BUTTON_ATTRIBUTES = {
     "relief":"groove",
     "bg":COLOR_MINOR_ACTION_BUTTON,
     "font":("SegoeUI", 10, "bold")
+}
+
+BADGE_BUTTON_ATTRIBUTES = {
+    "borderwidth":1,
+    "padx":3,
+    "pady":1,
+    "relief":"flat",
+    "bg":COLOR_BADGE_BUTTON,
+    "font":("SegoeUI", 8, "bold")
 }
 

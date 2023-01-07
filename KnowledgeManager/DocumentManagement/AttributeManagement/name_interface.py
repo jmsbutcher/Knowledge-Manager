@@ -1,9 +1,11 @@
 # 11/24/22
 
 import os
+import sys
+sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager")
 
-from .attribute_interface import AttributeInterface, ensure_dot_txt_suffix
-
+from .attribute_interface import AttributeInterface
+from KnowledgeManager.Utils.common_functions import ensure_dot_txt_suffix
 
 class NameInterface(AttributeInterface):
     """ 

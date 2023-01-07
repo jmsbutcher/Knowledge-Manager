@@ -1,0 +1,13 @@
+#Keywords: Python, ThisApp, Cloud
+#Category: Help
+
+1/2/23
+
+Setting Up Google API with Python
+
+This is how I figured out how to make this Knowledge Manager app work with Google Drive to sync documents across devices.
+
+
+Google has great tutorials for getting this set up and working:
+
+https://developers.google.com/drive/api/quickstart/python

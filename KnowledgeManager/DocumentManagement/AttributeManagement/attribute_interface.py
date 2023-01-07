@@ -1,11 +1,5 @@
 # 11/19/22
 
-import sys
-sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager/KnowledgeManager")
-
-
-from Utils.common_functions import ensure_dot_txt_suffix
-
 
 class InterfaceImplementationError(Exception):
     """ Used abstract base class as a concrete class, or 
@@ -29,10 +23,11 @@ class AttributeInterface:
               the attribute interfaces will load the other attributes.
 
         load() -- loads the document attribute str extracted from the document's
-            physical file (defined by the document's [path] attribute) 
-            into the local document object's attribute.
+                physical file (defined by the document's [path] attribute) 
+                into the local document object's attribute.
 
-        set(new_value) -- overwrite the attribute value, or create it
+        set(new_value) -- overwrite the attribute value, or create it, both in
+                the object's local attribute AND on the physical file.
 
         get() -- return the attribute value stored in the local document object
      """
@@ -42,7 +37,6 @@ class AttributeInterface:
         self.document = document
         if document.path is None or document.path == "":
             raise DocumentPathMissingError
-        #self.doc_path = Path(ensure_dot_txt_suffix(str(self.document.path)))
 
     # pure virtual method - must override
     def __str__(self):
@@ -108,31 +102,3 @@ class AttributeInterface:
             doc.write(replacement_line)
             doc.writelines(lines)
 
-        # Update document object's attribute by reading the just written value
-        #self._get_value_after_identifier()
-
-
-
-if __name__ == "__main__":
-
-    import os
-    from pathlib import Path
-
-    class Doc:
-        def __init__(self, name):
-            self.path = Path(os.getcwd()) / name
-
-    test_doc = Doc("test.txt")
-
-    att_int = AttributeInterface("#Category:", test_doc)
-
-
-    category = att_int._get_value_after_identifier()
-    print(category)
-
-    att_int._set_value_after_identifier("gluey")
-    
-    category = att_int._get_value_after_identifier()
-    print(category)
-
-    print("done")

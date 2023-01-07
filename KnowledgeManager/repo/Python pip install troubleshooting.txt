@@ -23,4 +23,3 @@ Resources:
 Things to try:
 
 - Try using python3 instead of python
-

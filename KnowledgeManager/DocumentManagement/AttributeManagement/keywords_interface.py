@@ -4,6 +4,15 @@ from .attribute_interface import AttributeInterface
 
 
 class KeywordsInterface(AttributeInterface):
+    """ Handles getting and setting a document's keywords attribute.
+    
+    A keyword acts as a "tag" or "label" for the document for helping with
+    searching, grouping, and organizing documents.
+
+    A document can have several keywords, and so this interface also includes
+    add() and remove() methods, unlike most other atrribute interfaces that can
+    only have one value.
+    """
 
     name = "Keywords"
 

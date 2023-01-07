@@ -1,15 +1,14 @@
 # 11/6/22
 
-from tkinter import BOTH, Button, Entry, Frame, Label, StringVar, Tk, ttk, X, Y
 
-#from DocumentManagement.document_manager import DocumentManager
-#from globals import DEFAULT_DOCUMENT_REPO_PATH
+from tkinter import BOTH, Button, Entry, Frame, Tk, X, Y
+
 from document_list_frame import DocumentListFrame
 from document_details_frame import DocumentDetailsFrame
+from filters_frame import FiltersFrame
 from gui_functions import add_new_document
 from gui_resources import *
-
-
+from globals import doc_manager
 
 
 class MainWindow(Frame):
@@ -52,15 +51,11 @@ class MainWindow(Frame):
         self.search_button.pack(side="right", padx=5, pady=5)
     
 
+        # ---------------------------------------------------------------------
         # Filters Panel - Add filters to document list results
-        self.filters_panel = Frame(self.main_window,
-            STANDARD_PANEL_ATTRIBUTES)
-        self.filters_panel.pack(fill=X)
 
-        self.filters_label = Label(self.filters_panel,
-            STANDARD_LABEL_ATTRIBUTES,
-            text="Filters:")
-        self.filters_label.grid(row=0, column=0)
+        self.filters_panel = FiltersFrame(self.main_window)
+        self.filters_panel.pack(fill=X)
 
 
         # ---------------------------------------------------------------------
@@ -76,21 +71,24 @@ class MainWindow(Frame):
         self.document_list_frame = DocumentListFrame(self.main_window, self.side_panel)
         self.document_list_frame.pack(fill=BOTH)
 
-
-        self.side_panel.set_notifier(self.document_list_frame)
-
+        self.side_panel.set_notifier(self.document_list_frame.load_documents)
+        self.filters_panel.set_notifier(self.document_list_frame.load_documents)
 
 
     def on_add_new_document(self):
         add_new_document()
+        doc_manager.load_documents()
         self.document_list_frame.load_documents()
 
     def get_search_results(self, *args):
-        self.document_list_frame.display_search_results(self.search_bar_entry.get())
+        doc_manager.set_active_search_term(self.search_bar_entry.get())
+        doc_manager.load_documents()
+        self.document_list_frame.load_documents()
 
 
 
-root = Tk()
-root.title("James's Knowledge Manager - v0.0 - 11/6/22")
-MainWindow(root)
-root.mainloop()
+if __name__ == "__main__":
+    root = Tk()
+    root.title("James's Knowledge Manager - v0.0 - 11/6/22")
+    MainWindow(root)
+    root.mainloop()

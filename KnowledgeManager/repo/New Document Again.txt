@@ -1,4 +1,4 @@
-#Keywords: One, Two, Three
+#Keywords: One Two Three
 #Category: Really Cool
 
 Just another document.

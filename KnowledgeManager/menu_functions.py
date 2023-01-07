@@ -104,7 +104,7 @@ def handle_edit_document():
 
 def handle_list_documents():
     doc_manager = DocumentManager(DOCUMENT_FOLDER_PATH)
-    doc_names = doc_manager.get_list_of_document_names()
+    doc_names = doc_manager.get_list_of_names()
     print("\nDocuments:\n")
     for doc_number, doc_name in enumerate(doc_names):
         print ("{:2d} - {}".format(doc_number, doc_name))
@@ -144,7 +144,7 @@ def handle_filter_by_keyword():
     keywords_string = get_input("Enter keywords: ")
     keywords = [keyword.strip() for keyword in keywords_string.split(",")]
 
-    matches = doc_manager.filter_documents_by_keyword(keywords)
+    matches = doc_manager.filter_by_keyword(keywords)
 
     print("\nResults:\n")
     for doc_number, doc in enumerate(matches):
@@ -161,13 +161,13 @@ def search_for_document():
     # Keep narrowing down search until exact name match is found 
     while True:
 
-        if doc_name in doc_manager.get_list_of_document_names():
+        if doc_name in doc_manager.get_list_of_names():
             return doc_name
 
         doc_name = get_input("\nSearch for document by name or 'q' to cancel: ")
         if doc_name == "q":
             return None
-        elif doc_name in doc_manager.get_list_of_document_names():
+        elif doc_name in doc_manager.get_list_of_names():
             return doc_name
         else:
             # Get all potential matches that include substring

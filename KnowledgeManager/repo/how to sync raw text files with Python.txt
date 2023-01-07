@@ -1,0 +1,65 @@
+#Keywords: Python, ThisApp, ChatGPT
+#Category: Help
+
+1/2/23
+
+I used this prompt on OpenAI's awesome new AI: ChatGPT:
+
+Prompt I used:
+"write me a python program that syncs raw text files across devices"
+
+Response:
+"Certainly! Here is a simple program that can sync raw text files across devices using Python:"
+
+import os
+import glob
+import time
+
+def sync_text_files():
+  # Set the directory where the text files are stored
+  dir = '/path/to/text/files'
+
+  # Get a list of all the text files in the directory
+  text_files = glob.glob(dir + '/*.txt')
+
+  # Set the destination directory where the text files will be synced
+  dest_dir = '/path/to/sync/directory'
+
+  # Sync the text files to the destination directory
+  for text_file in text_files:
+    # Get the last modified time of the file
+    last_modified_time = os.path.getmtime(text_file)
+
+    # Get the file name
+    file_name = os.path.basename(text_file)
+
+    # Construct the destination path for the file
+    dest_path = os.path.join(dest_dir, file_name)
+
+    # Check if the file exists in the destination directory
+    if not os.path.exists(dest_path):
+      # If the file doesn't exist in the destination directory, copy it
+      shutil.copy(text_file, dest_dir)
+    else:
+      # If the file exists in the destination directory, check the last modified time
+      dest_modified_time = os.path.getmtime(dest_path)
+
+      # If the file has been modified more recently in the source directory, copy it to the destination
+      if last_modified_time > dest_modified_time:
+        shutil.copy(text_file, dest_dir)
+
+# Run the sync function every 60 seconds
+while True:
+  sync_text_files()
+  time.sleep(60)
+
+
+
+"This program will sync all the text files in the specified source directory to the specified destination directory. It will check the last modified time of the files in both directories and only copy a file from the source to the destination if it has been modified more recently in the source directory. The sync function is run every 60 seconds, so the text files will be kept up to date on both devices.
+
+I hope this helps! Let me know if you have any questions or if you need further assistance."
+
+
+
+
+

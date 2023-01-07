@@ -1,2 +1,2 @@
-import sys
-sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager")
+# import sys
+# sys.path.append("C:/Users/James/Documents/Programming/KnowledgeManager")
