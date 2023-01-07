@@ -6,4 +6,4 @@ Version 1.0
 by James Butcher
 jmsbutcher1576@gmail.com
 
-<img src="https://github.com/jmsbutcher/Knowledge-Manager/tree/main/Images/GUIscreenshot1.png" class="img-fluid" alt="GUIscreenshot1">
+<img src="https://github.com/jmsbutcher/Knowledge-Manager/blob/main/Images/GUIscreenshot1.PNG" class="img-fluid" alt="GUIscreenshot1">
